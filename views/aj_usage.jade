@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1= title
+  p
+    span - aj/list/&lt;id&gt;  
+    span For example, 
+      a(href='aj/list/2') aj/list/2
+    span  to list commands starting with id = 2.
+  p
+    span - aj/add/&lt;text&gt; adds new text via GET
+    span , or aj/add (post_data) adds new text via POST 
+    span Eg: 
+      a(href='aj/add/a quick brown fox') aj/add/a quick brown fox
+  p
+    span - aj/id displays the last ID added (0 if empty)  
+    span Eg: 
+      a(href='aj/id') aj/id
+  p
+    span - aj/removeall deletes all added texts  
+    span Eg: 
+      a(href='aj/removeall') aj/removeall
