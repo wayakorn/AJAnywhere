@@ -3,20 +3,47 @@ extends layout
 block content
   h1= title
   p
+    span -  
+      a(href='aj/id') aj/id
+    span  to display the last ID added (return 0 if empty)  
+  p
+    span - aj/add/&lt;text&gt; adds new text via GET, 
+    span Eg: 
+      a(href='aj/add/a quick brown fox') aj/add/a quick brown fox
+    br
+    span - aj/add (post_data) adds new text via POST 
+  p
     span - aj/list/&lt;id&gt;  
     span For example, 
       a(href='aj/list/2') aj/list/2
     span  to list commands starting with id = 2.
-  p
-    span - aj/add/&lt;text&gt; adds new text via GET
-    span , or aj/add (post_data) adds new text via POST 
-    span Eg: 
-      a(href='aj/add/a quick brown fox') aj/add/a quick brown fox
-  p
-    span - aj/id displays the last ID added (0 if empty)  
-    span Eg: 
-      a(href='aj/id') aj/id
+    br
+    span - 
+      a(href='aj/list') aj/list
+    span  to list all commands.
   p
     span - aj/removeall deletes all added texts  
     span Eg: 
       a(href='aj/removeall') aj/removeall
+  hr
+  p
+    span - 
+      a(href='aj/s_id') aj/s_id
+    span  to display the current schema version 
+  p
+    span - aj/s_updateget/&lt;key&gt;/&lt;value&gt; update key value pair in dictionary via GET, 
+    span Eg: 
+      a(href='aj/s_updateget/schema key1/schema value1') aj/s_updateget/schema key1/ schema value1
+    br
+    span  
+      a(href='aj/s_updateget/RHVtbXlEZXZpY2U=/YWpzb2Z0d2FyZXZlcnNpb249djE0LjEyLjAwMA0KYnVzbmFtZT1EdW1teUJ1cw0KZGV2aWNlaWQ9MDA3DQpkZXZpY2VuYW1lPUR1bW15RGV2aWNlDQppbnRyb3NwZWN0PTxub2RlPiAgPGludGVyZmFjZSBuYW1lPSJvcmcuYWxsam95bi5idXMuc2FtcGxlcy5jaGF0Ij4gICAgPHNpZ25hbCBuYW1lPSJDaGF0Ij4gICAgICA8YXJnIG5hbWU9InN0ciIgdHlwZT0icyIgZGlyZWN0aW9uPSJvdXQiLz4gICAgPC9zaWduYWw-ICAgIDxtZXRob2QgbmFtZT0iU2VuZENoYXQiPiAgICAgIDxhcmcgbmFtZT0ic3RyIiB0eXBlPSJzIiBkaXJlY3Rpb249ImluIi8-ICAgIDwvbWV0aG9kPiAgPC9pbnRlcmZhY2U-ICA8aW50ZXJmYWNlIG5hbWU9Im9yZy5mcmVlZGVza3RvcC5EQnVzLkludHJvc3BlY3RhYmxlIj4gICAgPG1ldGhvZCBuYW1lPSJJbnRyb3NwZWN0Ij4gICAgICA8YXJnIG5hbWU9ImRhdGEiIHR5cGU9InMiIGRpcmVjdGlvbj0ib3V0Ii8-ICAgIDwvbWV0aG9kPiAgPC9pbnRlcmZhY2U-ICA8aW50ZXJmYWNlIG5hbWU9Im9yZy5hbGxzZWVuLkludHJvc3BlY3RhYmxlIj4gICAgPG1ldGhvZCBuYW1lPSJHZXREZXNjcmlwdGlvbkxhbmd1YWdlcyI-ICAgICAgPGFyZyBuYW1lPSJsYW5ndWFnZVRhZ3MiIHR5cGU9ImFzIiBkaXJlY3Rpb249Im91dCIvPiAgICA8L21ldGhvZD4gICAgPG1ldGhvZCBuYW1lPSJJbnRyb3NwZWN0V2l0aERlc2NyaXB0aW9uIj4gICAgICA8YXJnIG5hbWU9Imxhbmd1YWdlVGFnIiB0eXBlPSJzIiBkaXJlY3Rpb249ImluIi8-ICAgICAgPGFyZyBuYW1lPSJkYXRhIiB0eXBlPSJzIiBkaXJlY3Rpb249Im91dCIvPiAgICA8L21ldGhvZD4gICAgPGFubm90YXRpb24gbmFtZT0ib3JnLmFsbGpveW4uQnVzLlNlY3VyZSIgdmFsdWU9Im9mZiIvPiAgPC9pbnRlcmZhY2U-PC9ub2RlPg0KDQptYW51ZmFjdHVyZXI9TVMNCnBhdGg9L2NoYXRTZXJ2aWNlDQpzdGF0aWNuYW1lPUR1bW15RGV2aWNlX01TXzAwN18vY2hhdFNlcnZpY2U=') aj/s_updateget/(dummy...)
+    br
+    span - aj/s_updatepost/&lt;key&gt; (post_data) updates entry in dictionary via POST 
+  p
+    span - 
+      a(href='aj/s_list') aj/s_list
+    span  to list all schemas.
+  p
+    span - aj/s_removeall deletes all schemas 
+    span Eg: 
+      a(href='aj/s_removeall') aj/s_removeall
