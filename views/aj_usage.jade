@@ -3,49 +3,49 @@ extends layout
 block content
   h1= title
   p
-    span /aj/&lt;UserName&gt;//&lt;Operation&gt;/..., where Operation=
+    span /aj/&lt;UserName&gt;/&lt;Operation&gt;/..., where Operation=
   p
     span &nbsp;&nbsp;-  
-      a(href='aj/MSA//id') aj/MSA//id
+      a(href='aj/MSA/id') aj/MSA/id
     span  to display the last ID added (return 0 if empty)  
   p
-    span &nbsp;&nbsp;- aj/MSA//add/&lt;text&gt; adds new text via GET, 
+    span &nbsp;&nbsp;- aj/MSA/add/&lt;text&gt; adds new text via GET, 
     span Eg: 
-      a(href='aj/MSA//add/c2lnbmFsCnN0YXRpY25hbWU9Q2hhdCB0ZXN0IGRldmljZV9NYW51ZmFjdHVyZXJfNEE3NzMyNzMtN0I2QS00OTRELUE4RTgtRkUxQjVDRjVBNEIzXy9jaGF0U2VydmljZQppbnRlcmZhY2VuYW1lPW9yZy5hbGxqb3luLmJ1cy5zYW1wbGVzLmNoYXQKbWV0aG9kbmFtZT1DaGF0CjA9SGkgdGhlcmUK') aj/MSA//add/(...)
+      a(href='aj/MSA/add/c2lnbmFsCnN0YXRpY25hbWU9Q2hhdCB0ZXN0IGRldmljZV9NYW51ZmFjdHVyZXJfNEE3NzMyNzMtN0I2QS00OTRELUE4RTgtRkUxQjVDRjVBNEIzXy9jaGF0U2VydmljZQppbnRlcmZhY2VuYW1lPW9yZy5hbGxqb3luLmJ1cy5zYW1wbGVzLmNoYXQKbWV0aG9kbmFtZT1DaGF0CjA9SGkgdGhlcmUK') aj/MSA/add/(...)
     br
-    span &nbsp;&nbsp;&nbsp; aj/MSA//add (post_data) adds new text via POST 
+    span &nbsp;&nbsp;&nbsp; aj/MSA/add (post_data) adds new text via POST 
   p
-    span &nbsp;&nbsp;- aj/MSA//list/&lt;id&gt;  
+    span &nbsp;&nbsp;- aj/MSA/list/&lt;id&gt;  
     span For example, 
-      a(href='aj/MSA//list/2') aj/MSA//list/2
+      a(href='aj/MSA/list/2') aj/MSA/list/2
     span  to list commands starting with id = 2.
     br
     span &nbsp;&nbsp;&nbsp;&nbsp;
-      a(href='aj/MSA//list') aj/MSA//list
+      a(href='aj/MSA/list') aj/MSA/list
     span  to list all commands.
   p
-    span &nbsp;&nbsp;- aj/MSA//removeall deletes all added texts  
+    span &nbsp;&nbsp;- aj/MSA/removeall deletes all added texts  
     span Eg: 
-      a(href='aj/MSA//removeall') aj/MSA//removeall
+      a(href='aj/MSA/removeall') aj/MSA/removeall
   hr
   p
     span &nbsp;&nbsp;- 
-      a(href='aj/MSA//s_id') aj/MSA//s_id
+      a(href='aj/MSA/s_id') aj/MSA/s_id
     span  to display the current schema version 
   p
-    span &nbsp;&nbsp;- aj/MSA//s_updateget/&lt;key&gt;/&lt;value&gt; update key value pair in dictionary via GET, 
+    span &nbsp;&nbsp;- aj/MSA/s_updateget/&lt;key&gt;/&lt;value&gt; update key value pair in dictionary via GET, 
     span Eg: 
-      a(href='aj/MSA//s_updateget/schema key1/schema value1') aj/MSA//s_updateget/schema key1/ schema value1
+      a(href='aj/MSA/s_updateget/schema key1/schema value1') aj/MSA/s_updateget/schema key1/ schema value1
     br
     span  &nbsp;&nbsp;&nbsp;&nbsp;
-      a(href='aj/MSA//s_updateget/RHVtbXlEZXZpY2U=/YWpzb2Z0d2FyZXZlcnNpb249djE0LjEyLjAwMA0KYnVzbmFtZT1EdW1teUJ1cw0KZGV2aWNlaWQ9MDA3DQpkZXZpY2VuYW1lPUR1bW15RGV2aWNlDQppbnRyb3NwZWN0PTxub2RlPiAgPGludGVyZmFjZSBuYW1lPSJvcmcuYWxsam95bi5idXMuc2FtcGxlcy5jaGF0Ij4gICAgPHNpZ25hbCBuYW1lPSJDaGF0Ij4gICAgICA8YXJnIG5hbWU9InN0ciIgdHlwZT0icyIgZGlyZWN0aW9uPSJvdXQiLz4gICAgPC9zaWduYWw-ICAgIDxtZXRob2QgbmFtZT0iU2VuZENoYXQiPiAgICAgIDxhcmcgbmFtZT0ic3RyIiB0eXBlPSJzIiBkaXJlY3Rpb249ImluIi8-ICAgIDwvbWV0aG9kPiAgPC9pbnRlcmZhY2U-ICA8aW50ZXJmYWNlIG5hbWU9Im9yZy5mcmVlZGVza3RvcC5EQnVzLkludHJvc3BlY3RhYmxlIj4gICAgPG1ldGhvZCBuYW1lPSJJbnRyb3NwZWN0Ij4gICAgICA8YXJnIG5hbWU9ImRhdGEiIHR5cGU9InMiIGRpcmVjdGlvbj0ib3V0Ii8-ICAgIDwvbWV0aG9kPiAgPC9pbnRlcmZhY2U-ICA8aW50ZXJmYWNlIG5hbWU9Im9yZy5hbGxzZWVuLkludHJvc3BlY3RhYmxlIj4gICAgPG1ldGhvZCBuYW1lPSJHZXREZXNjcmlwdGlvbkxhbmd1YWdlcyI-ICAgICAgPGFyZyBuYW1lPSJsYW5ndWFnZVRhZ3MiIHR5cGU9ImFzIiBkaXJlY3Rpb249Im91dCIvPiAgICA8L21ldGhvZD4gICAgPG1ldGhvZCBuYW1lPSJJbnRyb3NwZWN0V2l0aERlc2NyaXB0aW9uIj4gICAgICA8YXJnIG5hbWU9Imxhbmd1YWdlVGFnIiB0eXBlPSJzIiBkaXJlY3Rpb249ImluIi8-ICAgICAgPGFyZyBuYW1lPSJkYXRhIiB0eXBlPSJzIiBkaXJlY3Rpb249Im91dCIvPiAgICA8L21ldGhvZD4gICAgPGFubm90YXRpb24gbmFtZT0ib3JnLmFsbGpveW4uQnVzLlNlY3VyZSIgdmFsdWU9Im9mZiIvPiAgPC9pbnRlcmZhY2U-PC9ub2RlPg0KDQptYW51ZmFjdHVyZXI9TVMNCnBhdGg9L2NoYXRTZXJ2aWNlDQpzdGF0aWNuYW1lPUR1bW15RGV2aWNlX01TXzAwN18vY2hhdFNlcnZpY2U=') aj/MSA//s_updateget/(dummy...)
+      a(href='aj/MSA/s_updateget/RHVtbXlEZXZpY2U=/YWpzb2Z0d2FyZXZlcnNpb249djE0LjEyLjAwMA0KYnVzbmFtZT1EdW1teUJ1cw0KZGV2aWNlaWQ9MDA3DQpkZXZpY2VuYW1lPUR1bW15RGV2aWNlDQppbnRyb3NwZWN0PTxub2RlPiAgPGludGVyZmFjZSBuYW1lPSJvcmcuYWxsam95bi5idXMuc2FtcGxlcy5jaGF0Ij4gICAgPHNpZ25hbCBuYW1lPSJDaGF0Ij4gICAgICA8YXJnIG5hbWU9InN0ciIgdHlwZT0icyIgZGlyZWN0aW9uPSJvdXQiLz4gICAgPC9zaWduYWw-ICAgIDxtZXRob2QgbmFtZT0iU2VuZENoYXQiPiAgICAgIDxhcmcgbmFtZT0ic3RyIiB0eXBlPSJzIiBkaXJlY3Rpb249ImluIi8-ICAgIDwvbWV0aG9kPiAgPC9pbnRlcmZhY2U-ICA8aW50ZXJmYWNlIG5hbWU9Im9yZy5mcmVlZGVza3RvcC5EQnVzLkludHJvc3BlY3RhYmxlIj4gICAgPG1ldGhvZCBuYW1lPSJJbnRyb3NwZWN0Ij4gICAgICA8YXJnIG5hbWU9ImRhdGEiIHR5cGU9InMiIGRpcmVjdGlvbj0ib3V0Ii8-ICAgIDwvbWV0aG9kPiAgPC9pbnRlcmZhY2U-ICA8aW50ZXJmYWNlIG5hbWU9Im9yZy5hbGxzZWVuLkludHJvc3BlY3RhYmxlIj4gICAgPG1ldGhvZCBuYW1lPSJHZXREZXNjcmlwdGlvbkxhbmd1YWdlcyI-ICAgICAgPGFyZyBuYW1lPSJsYW5ndWFnZVRhZ3MiIHR5cGU9ImFzIiBkaXJlY3Rpb249Im91dCIvPiAgICA8L21ldGhvZD4gICAgPG1ldGhvZCBuYW1lPSJJbnRyb3NwZWN0V2l0aERlc2NyaXB0aW9uIj4gICAgICA8YXJnIG5hbWU9Imxhbmd1YWdlVGFnIiB0eXBlPSJzIiBkaXJlY3Rpb249ImluIi8-ICAgICAgPGFyZyBuYW1lPSJkYXRhIiB0eXBlPSJzIiBkaXJlY3Rpb249Im91dCIvPiAgICA8L21ldGhvZD4gICAgPGFubm90YXRpb24gbmFtZT0ib3JnLmFsbGpveW4uQnVzLlNlY3VyZSIgdmFsdWU9Im9mZiIvPiAgPC9pbnRlcmZhY2U-PC9ub2RlPg0KDQptYW51ZmFjdHVyZXI9TVMNCnBhdGg9L2NoYXRTZXJ2aWNlDQpzdGF0aWNuYW1lPUR1bW15RGV2aWNlX01TXzAwN18vY2hhdFNlcnZpY2U=') aj/MSA/s_updateget/(dummy...)
     br
-    span &nbsp;&nbsp;&nbsp; aj/MSA//s_updatepost/&lt;key&gt; (post_data) updates entry in dictionary via POST 
+    span &nbsp;&nbsp;&nbsp; aj/MSA/s_updatepost/&lt;key&gt; (post_data) updates entry in dictionary via POST 
   p
     span &nbsp;&nbsp;- 
-      a(href='aj/MSA//s_list') aj/MSA//s_list
+      a(href='aj/MSA/s_list') aj/MSA/s_list
     span  to list all schemas.
   p
-    span &nbsp;&nbsp;- aj/MSA//s_removeall deletes all schemas 
+    span &nbsp;&nbsp;- aj/MSA/s_removeall deletes all schemas 
     span Eg: 
-      a(href='aj/MSA//s_removeall') aj/MSA//s_removeall
+      a(href='aj/MSA/s_removeall') aj/MSA/s_removeall

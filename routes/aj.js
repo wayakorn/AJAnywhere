@@ -19,7 +19,7 @@ var g_currentId = [];
 var g_items = [];
 
 // List operation
-router.get('/:user//list/?:fromId([0-9]+)?', function(req, res) {
+router.get('/:user/list/?:fromId([0-9]+)?', function(req, res) {
     var body = "";
     if (req.params.user) {
         var user = req.params.user;
@@ -43,14 +43,14 @@ router.get('/:user//list/?:fromId([0-9]+)?', function(req, res) {
 });
 
 // Add operation (GET)
-router.get('/:user//add/:data', function(req, res) {
+router.get('/:user/add/:data', function(req, res) {
     var user = req.params.user;
     var item = req.params.data;
     addCommon(req, res, user, item);
 });
 
 // Add operation (POST)
-router.post('/:user//add', function(req, res) {
+router.post('/:user/add', function(req, res) {
     var user = req.params.user;
     var item = null;
     if (req.body) {
@@ -81,7 +81,7 @@ function addCommon(req, res, user, item) {
 }
 
 // RemoveAll operation
-router.get('/:user//removeall', function(req, res) {
+router.get('/:user/removeall', function(req, res) {
     if (!req.params.user) {
         returnNumber(req, res, 0);
     } else {
@@ -93,7 +93,7 @@ router.get('/:user//removeall', function(req, res) {
 });
 
 // ID operation
-router.get('/:user//id', function(req, res) {
+router.get('/:user/id', function(req, res) {
     if (!req.params.user) {
         returnNumber(req, res, 0);
     } else {
@@ -118,7 +118,7 @@ var g_currentSchemaVersion = [];
 var g_schemas = [];
 
 // Schema update operation (GET)
-router.get('/:user//s_updateget/:key/:value', function(req, res) {
+router.get('/:user/s_updateget/:key/:value', function(req, res) {
     var user = req.params.user;
     var key = req.params.key;
     var value = req.params.value;
@@ -169,7 +169,7 @@ function s_updateCommon(req, res, user, key, value) {
 }
 
 // Schema list operation
-router.get('/:user//s_list', function(req, res) {
+router.get('/:user/s_list', function(req, res) {
     var body = "";
     if (!req.params.user) {
         returnNumber(req, res, 0);
@@ -194,7 +194,7 @@ router.get('/:user//s_list', function(req, res) {
 });
 
 // Schema removeall operation
-router.get('/:user//s_removeall', function(req, res) {
+router.get('/:user/s_removeall', function(req, res) {
     if (!req.params.user) {
         returnNumber(req, res, 0);
     } else {
@@ -211,7 +211,7 @@ router.get('/:user//s_removeall', function(req, res) {
 });
 
 // Schema get ID operation
-router.get('/:user//s_id', function(req, res) {
+router.get('/:user/s_id', function(req, res) {
     if (!req.params.user) {
         returnNumber(req, res, 0);
     } else {
