@@ -126,7 +126,7 @@ router.get('/:user/s_updateget/:key/:value', function(req, res) {
 });
 
 // Schema update operation (POST)  was '/s_update/:key'
-router.post(/\/(.+)\/\/s_updatepost\/(.+)/, function(req, res) {
+router.post(/\/(.+)\/s_updatepost\/(.+)/, function(req, res) {
     if (req.body) {
         console.log(req.headers);
     }
