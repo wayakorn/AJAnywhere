@@ -14,6 +14,32 @@ function returnNumber(req, res, id) {
     res.end(body + '\n\n');
 }
 
+var g_users = [];
+var g_usersAccessCount = {};
+
+function addUser(user) {
+    if (!user) {
+        return;
+    }
+    if (!g_usersAccessCount[user]) {
+        g_usersAccessCount[user] = 0;
+        g_users.push(user);
+    }
+    g_usersAccessCount[user]++;
+}
+
+// List all users
+router.get('/users', function(req, res) {
+    var body = "";
+    for (var i = 0; i < g_users.length; i++) {
+        body += (i+1).toString() + ". " + g_users[i];
+        body += " (" + g_usersAccessCount[g_users[i]] + ")\n";
+    }
+    res.setHeader('content-type', 'text/plain; charset=utf-8');
+    res.setHeader('cache-control', 'no-cache');
+    res.end(body + '\n');
+});
+
 
 var g_currentId = [];
 var g_items = [];
@@ -23,6 +49,7 @@ router.get('/:user/list/?:fromId([0-9]+)?', function(req, res) {
     var body = "";
     if (req.params.user) {
         var user = req.params.user;
+        addUser(user);
         var fromId = 0;
         if (req.params.fromId)
             fromId = req.params.fromId;
@@ -45,6 +72,7 @@ router.get('/:user/list/?:fromId([0-9]+)?', function(req, res) {
 // Add operation (GET)
 router.get('/:user/add/:data', function(req, res) {
     var user = req.params.user;
+    addUser(user);
     var item = req.params.data;
     addCommon(req, res, user, item);
 });
@@ -52,6 +80,7 @@ router.get('/:user/add/:data', function(req, res) {
 // Add operation (POST)
 router.post('/:user/add', function(req, res) {
     var user = req.params.user;
+    addUser(user);
     var item = null;
     if (req.body) {
         console.log(req.headers);
@@ -86,6 +115,7 @@ router.get('/:user/removeall', function(req, res) {
         returnNumber(req, res, 0);
     } else {
         var user = req.params.user;
+        addUser(user);
         g_currentId[user] = 0;
         g_items[user] = [];
         returnNumber(req, res, g_currentId[user]);
@@ -98,6 +128,7 @@ router.get('/:user/id', function(req, res) {
         returnNumber(req, res, 0);
     } else {
         var user = req.params.user;
+        addUser(user);
         if (!g_currentId[user])
             g_currentId[user] = 0;
         returnNumber(req, res, g_currentId[user]);
@@ -120,6 +151,7 @@ var g_schemas = [];
 // Schema update operation (GET)
 router.get('/:user/s_updateget/:key/:value', function(req, res) {
     var user = req.params.user;
+    addUser(user);
     var key = req.params.key;
     var value = req.params.value;
     s_updateCommon(req, res, user, key, value);
@@ -131,6 +163,7 @@ router.post(/\/(.+)\/s_updatepost\/(.+)/, function(req, res) {
         console.log(req.headers);
     }
     var user = req.params[0];
+    addUser(user);
     var key = req.params[1];
     var value = req.body;
     s_updateCommon(req, res, user, key, value);
@@ -175,6 +208,7 @@ router.get('/:user/s_list', function(req, res) {
         returnNumber(req, res, 0);
     } else {
         var user = req.params.user;
+        addUser(user);
         if (!g_schemas[user]) {
             g_schemas[user] = {};
             g_schemas[user]['s_keys'] = [];
@@ -199,6 +233,7 @@ router.get('/:user/s_removeall', function(req, res) {
         returnNumber(req, res, 0);
     } else {
         var user = req.params.user;
+        addUser(user);
         if (!g_currentSchemaVersion[user])
             g_currentSchemaVersion[user] = 0;
         g_currentSchemaVersion[user]++;
@@ -216,6 +251,7 @@ router.get('/:user/s_id', function(req, res) {
         returnNumber(req, res, 0);
     } else {
         var user = req.params.user;
+        addUser(user);
         if (!g_currentSchemaVersion[user])
             g_currentSchemaVersion[user] = 0;
         returnNumber(req, res, g_currentSchemaVersion[user]);
