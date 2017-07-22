@@ -28,3 +28,68 @@ router.get('/PlayTimeIsOver/:textt', function(req, res) {
 });
 
 module.exports = router;
+
+
+
+
+
+
+
+
+router.get('/mcp', function(req, res) {
+  res.render('mcp_usage', { title: 'MCP Usage' });
+});
+
+
+var g_currentJobId = 0;
+var g_hangingRes = null;
+
+// [PC] Get printer status
+router.get('/mcp/status', function(req, res) {
+    res.setHeader('content-type', 'text/html; charset=utf-8');
+    res.setHeader('cache-control', 'no-cache');
+
+    var body = "<html>Printer is <b>";
+	if (g_hangingRes) {
+		body += "online"
+	} else {
+		body += "offline"
+	}
+	body += "</b>.";
+    res.end(body + '</html>\n');
+});
+
+// [PC] Submit print job
+router.get('/mcp/submitjob', function(req, res) {
+    res.setHeader('content-type', 'text/html; charset=utf-8');
+    res.setHeader('cache-control', 'no-cache');
+
+    var body = "<html>";
+	if (g_hangingRes) {
+		var jobId = ++g_currentJobId;
+		
+		g_hangingRes.setHeader('content-type', 'text/plain; charset=utf-8');
+		g_hangingRes.setHeader('cache-control', 'no-cache');
+		var printerResponseBody = "Wait returned - print job ";
+		printerResponseBody += jobId.toString();
+		printerResponseBody += " arrived the printer.";
+		g_hangingRes.end(printerResponseBody);
+		g_hangingRes = null;
+
+		body += "Submitted print job " + jobId.toString() + "!";
+	} else {
+		body += "Print job <b>not</b> submitted - printer is offline."
+	}
+	body += ".";
+    res.end(body + '</html>\n');
+});
+
+// [Printer] Wait for print job 
+router.get('/mcp/printer/waitforjob', function(req, res) {
+	g_hangingRes = res;
+	g_hangingRes.on('close', function(e) {
+		console.log("### resetting g_hangingRes due to error: " + e);
+		g_hangingRes = null;
+	});
+});
+

@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= title
+  p
+    span [PC] Get printer status 
+      a(href='mcp/status') mcp/status
+  p
+    span [PC] Submit print job 
+      a(href='mcp/submitjob') mcp/submitjob
+  p
+    span [Printer] Wait for print job 
+      a(href='mcp/printer/waitforjob') mcp/printer/waitforjob
