@@ -42,7 +42,7 @@ router.get('/mcp', function(req, res) {
 
 
 var g_currentJobId = 0;
-var g_hangingRes = null;
+var g_waitingPrinter = null;
 
 // [PC] Get printer status
 router.get('/mcp/status', function(req, res) {
@@ -50,8 +50,9 @@ router.get('/mcp/status', function(req, res) {
     res.setHeader('cache-control', 'no-cache');
 
     var body = "<html>Printer is <b>";
-	if (g_hangingRes) {
-		body += "online"
+	if (g_waitingPrinter) {
+		body += "online @ "
+		body += g_waitingPrinter.Addr;
 	} else {
 		body += "offline"
 	}
@@ -59,37 +60,62 @@ router.get('/mcp/status', function(req, res) {
     res.end(body + '</html>\n');
 });
 
-// [PC] Submit print job
-router.get('/mcp/submitjob', function(req, res) {
+function SubmitJob(req, res, customText) {
+	if (customText == null) {
+		customText = "(empty text)";
+	}
+
     res.setHeader('content-type', 'text/html; charset=utf-8');
     res.setHeader('cache-control', 'no-cache');
 
     var body = "<html>";
-	if (g_hangingRes) {
+	if (g_waitingPrinter) {
 		var jobId = ++g_currentJobId;
 		
-		g_hangingRes.setHeader('content-type', 'text/plain; charset=utf-8');
-		g_hangingRes.setHeader('cache-control', 'no-cache');
+		console.log("[Printer] Sending job " + jobId + " to printer @ ", g_waitingPrinter.Addr);
+
+		body += "Submitted print job " + jobId.toString() + " @ " + g_waitingPrinter.Addr;
+
+		g_waitingPrinter.Res.setHeader('content-type', 'text/plain; charset=utf-8');
+		g_waitingPrinter.Res.setHeader('cache-control', 'no-cache');
 		var printerResponseBody = "Wait returned - print job ";
 		printerResponseBody += jobId.toString();
-		printerResponseBody += " arrived the printer.";
-		g_hangingRes.end(printerResponseBody);
-		g_hangingRes = null;
-
-		body += "Submitted print job " + jobId.toString() + "!";
+		printerResponseBody += " arrived the printer. Text: ";
+		printerResponseBody += customText;
+		g_waitingPrinter.Res.end(printerResponseBody);
+		g_waitingPrinter = null;
 	} else {
 		body += "Print job <b>not</b> submitted - printer is offline."
 	}
 	body += ".";
     res.end(body + '</html>\n');
+};
+
+// [PC] Submit print job (GET, without custom text)
+router.get('/mcp/submitjob', function(req, res) {
+	SubmitJob(req, res, null);
 });
+
+// [PC] Submit print job (GET, with custom text)
+router.get('/mcp/submitjob/:data', function(req, res) {
+	SubmitJob(req, res, req.params.data);
+});
+
+router.get('/mcp/submitjob/:data', function(req, res) {
+    var user = req.params.user;
+    addUser(user);
+    var item = req.params.data;
+    addCommon(req, res, user, item);
+});
+
 
 // [Printer] Wait for print job 
 router.get('/mcp/printer/waitforjob', function(req, res) {
-	g_hangingRes = res;
-	g_hangingRes.on('close', function(e) {
-		console.log("### resetting g_hangingRes due to error: " + e);
-		g_hangingRes = null;
+	g_waitingPrinter = {Res: res, Addr: req.socket.remoteAddress};
+	console.log("[Printer] connected @ ", req.socket.remoteAddress);
+	res.on('close', function(e) {
+		console.log("[Printer] lost connection @ " + g_waitingPrinter.Addr);
+		g_waitingPrinter = null;
 	});
 });
 
