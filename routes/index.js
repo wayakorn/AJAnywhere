@@ -43,6 +43,7 @@ router.get('/mcp', function(req, res) {
 
 var g_currentJobId = 0;
 var g_waitingPrinter = null;
+var g_printQueue = new Array();
 
 // [PC] Get printer status
 router.get('/mcp/status', function(req, res) {
@@ -56,51 +57,49 @@ router.get('/mcp/status', function(req, res) {
 	} else {
 		body += "offline"
 	}
-	body += "</b>.";
-    res.end(body + '</html>\n');
+	body += "</b>.<br>";
+    body += "There are " + g_printQueue.length + " jobs waiting to be printed.";
+    res.end(body + "</html>\n");
 });
 
-function SubmitJob(req, res, customText) {
-	if (customText == null) {
-		customText = "(empty text)";
+function SubmitJob(req, res, filename) {
+	if (filename == null) {
+		filename = "download.xps";
 	}
 
-    res.setHeader('content-type', 'text/html; charset=utf-8');
-    res.setHeader('cache-control', 'no-cache');
+    // Queue the job
+    var jobId = ++g_currentJobId;
+    var resourceUrl = "http://mycps.azurewebsites.net/api/download/?filename=" + filename;
+    g_printQueue.push({JobId: jobId, ResourceUrl: resourceUrl});
+    console.log("[Queue] Queued job " + jobId + ", resourceUrl=" + resourceUrl);
 
-    var body = "<html>";
+    var httpStatus = 200;
+    var body = "";
 	if (g_waitingPrinter) {
-		var jobId = ++g_currentJobId;
-		
-		console.log("[Printer] Sending job " + jobId + " to printer @ " + g_waitingPrinter.Addr);
-
-		body += "Submitted print job " + jobId.toString() + " @ " + g_waitingPrinter.Addr;
-
-		g_waitingPrinter.Res.setHeader('content-type', 'text/plain; charset=utf-8');
-		g_waitingPrinter.Res.setHeader('cache-control', 'no-cache');
-		var printerResponseBody = "Wait returned - print job ";
-		printerResponseBody += jobId.toString();
-		printerResponseBody += " arrived the printer. Text: ";
-		printerResponseBody += customText;
-		g_waitingPrinter.Res.end(printerResponseBody);
+        // Pop it out from the queue and send it to the printer
+        var job = g_printQueue.shift();
+        body += "Print job " + job.JobId + " sent to printer @ " + g_waitingPrinter.Addr + ", resourceUrl:\r\n" + job.ResourceUrl;
+        SendPrintJob(job, g_waitingPrinter);
 		g_waitingPrinter = null;
 	} else {
-		body += "Print job <b>not</b> submitted - printer is offline."
+        httpStatus = 204;
+		body += "Print job queued, waiting for a printer to pick up. " + "Currently there are " + g_printQueue.length + " job(s) in the queue.";
 	}
-	body += ".";
-    res.end(body + '</html>\n');
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    res.end(body);
 };
 
-// [PC] Submit print job (GET, without custom text)
+// [PC] Submit print job (GET, without resourceUrl)
 router.get('/mcp/submitjob', function(req, res) {
 	SubmitJob(req, res, null);
 });
 
-// [PC] Submit print job (GET, with custom text)
+// [PC] Submit print job (GET, with resourceUrl)
 router.get('/mcp/submitjob/:data', function(req, res) {
 	SubmitJob(req, res, req.params.data);
 });
 
+// [PC] Submit print job (POST, with resourceUrl)
 router.get('/mcp/submitjob/:data', function(req, res) {
     var user = req.params.user;
     addUser(user);
@@ -108,14 +107,27 @@ router.get('/mcp/submitjob/:data', function(req, res) {
     addCommon(req, res, user, item);
 });
 
+function SendPrintJob(job, printer) {
+    jobId = job.JobId;
+    resourceUrl = job.ResourceUrl;
+    console.log("[Printer] Sending job " + job.JobId + " to printer @ " + printer.Addr + ", resourceUrl=" + job.ResourceUrl);
+    printer.Res.writeHead(200, {"Content-Type": "text/plain"});
+    printer.Res.end(resourceUrl);
+}
 
 // [Printer] Wait for print job 
 router.get('/mcp/printer/waitforjob', function(req, res) {
-	g_waitingPrinter = {Res: res, Addr: req.socket.remoteAddress};
-	console.log("[Printer] connected @ " + req.socket.remoteAddress);
-	res.on('close', function(e) {
-		console.log("[Printer] lost connection @ " + g_waitingPrinter.Addr);
-		g_waitingPrinter = null;
-	});
+    console.log("[Printer] connected @ " + req.socket.remoteAddress);
+    var printer = {Res: res, Addr: req.socket.remoteAddress};
+    if (g_printQueue.length > 0) {
+        SendPrintJob(g_printQueue.shift(), printer);
+    } else {
+        // If the queue is empty, make the printer wait for job
+        g_waitingPrinter = printer;
+        res.on('close', function(e) {
+            console.log("[Printer] lost connection @ " + g_waitingPrinter.Addr);
+            g_waitingPrinter = null;
+        });
+    }
 });
 
