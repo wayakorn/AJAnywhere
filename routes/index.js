@@ -72,7 +72,7 @@ function SubmitJob(req, res, customText) {
 	if (g_waitingPrinter) {
 		var jobId = ++g_currentJobId;
 		
-		console.log("[Printer] Sending job " + jobId + " to printer @ ", g_waitingPrinter.Addr);
+		console.log("[Printer] Sending job " + jobId + " to printer @ " + g_waitingPrinter.Addr);
 
 		body += "Submitted print job " + jobId.toString() + " @ " + g_waitingPrinter.Addr;
 
@@ -112,7 +112,7 @@ router.get('/mcp/submitjob/:data', function(req, res) {
 // [Printer] Wait for print job 
 router.get('/mcp/printer/waitforjob', function(req, res) {
 	g_waitingPrinter = {Res: res, Addr: req.socket.remoteAddress};
-	console.log("[Printer] connected @ ", req.socket.remoteAddress);
+	console.log("[Printer] connected @ " + req.socket.remoteAddress);
 	res.on('close', function(e) {
 		console.log("[Printer] lost connection @ " + g_waitingPrinter.Addr);
 		g_waitingPrinter = null;
