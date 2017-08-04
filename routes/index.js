@@ -40,94 +40,81 @@ router.get('/mcp', function(req, res) {
   res.render('mcp_usage', { title: 'MCP Usage' });
 });
 
+var g_printers = [];
+var g_notifyCount = 0;
 
-var g_currentJobId = 0;
-var g_waitingPrinter = null;
-var g_printQueue = new Array();
+function FindPrinter(socket, remove) {
+    var result = null;
+    var printers = [];
+    for (var i = 0; i < g_printers.length; ++i) {
+        if (socket == g_printers[i].Sock) {
+            result = g_printers[i];
+            if (!remove) {
+                break;
+            }
+        } else {
+            printers.push(g_printers[i]);
+        }
+    }
+    if (remove) {
+        g_printers = printers;
+    }
+    return result;
+};
+
+function DoNotify(req, res) {
+    var httpStatus;
+    var body;
+	if (g_printers.length > 0) {
+		body = "Notifying " + g_printers.length + " printers...";
+        for (var i = 0; i < g_printers.length; ++i) {
+            ++g_notifyCount;
+            g_printers[i].Res.writeHead(200, {"Content-Type": "text/plain"});
+            g_printers[i].Res.end(g_notifyCount.toString());
+        }
+		g_printers = [];
+	} else {
+		body = "No printer currently waiting.";
+	}
+    console.log(body);
+    res.writeHead(200, {"Content-Type": "text/plain"});
+    res.end(body);
+};
 
 // [PC] Get printer status
 router.get('/mcp/status', function(req, res) {
     res.setHeader('content-type', 'text/html; charset=utf-8');
     res.setHeader('cache-control', 'no-cache');
-
-    var body = "<html>Printer is <b>";
-	if (g_waitingPrinter) {
-		body += "online @ "
-		body += g_waitingPrinter.Addr;
-	} else {
-		body += "offline"
-	}
-	body += "</b>.<br>";
-    body += "There are " + g_printQueue.length + " jobs waiting to be printed.";
-    res.end(body + "</html>\n");
+    res.end("<html>There are currently <b>" + g_printers.length + "</b> printers waiting.</html>");
 });
 
-function SubmitJob(req, res, filename) {
-	if (filename == null) {
-		filename = "download.xps";
-	}
-
-    // Queue the job
-    var jobId = ++g_currentJobId;
-    var resourceUrl = "http://mycps.azurewebsites.net/api/download/?filename=" + filename;
-    g_printQueue.push({JobId: jobId, ResourceUrl: resourceUrl});
-    console.log("[Queue] Queued job " + jobId + ", resourceUrl=" + resourceUrl);
-
-    var httpStatus = 200;
-    var body = "";
-	if (g_waitingPrinter) {
-        // Pop it out from the queue and send it to the printer
-        var job = g_printQueue.shift();
-        body += "Print job " + job.JobId + " sent to printer @ " + g_waitingPrinter.Addr + ", resourceUrl:\r\n" + job.ResourceUrl;
-        SendPrintJob(job, g_waitingPrinter);
-		g_waitingPrinter = null;
-	} else {
-        httpStatus = 204;
-		body += "Print job queued, waiting for a printer to pick up. " + "Currently there are " + g_printQueue.length + " job(s) in the queue.";
-	}
-    res.writeHead(200, {"Content-Type": "text/plain"});
-    res.end(body);
-};
-
-// [PC] Submit print job (GET, without resourceUrl)
-router.get('/mcp/submitjob', function(req, res) {
-	SubmitJob(req, res, null);
+router.get('/mcp/notify', function(req, res) {
+    DoNotify(req, res);
 });
 
-// [PC] Submit print job (GET, with resourceUrl)
-router.get('/mcp/submitjob/:data', function(req, res) {
-	SubmitJob(req, res, req.params.data);
+router.put('/mcp/notify', function(req, res) {
+    DoNotify(req, res);
 });
-
-// [PC] Submit print job (POST, with resourceUrl)
-router.get('/mcp/submitjob/:data', function(req, res) {
-    var user = req.params.user;
-    addUser(user);
-    var item = req.params.data;
-    addCommon(req, res, user, item);
-});
-
-function SendPrintJob(job, printer) {
-    jobId = job.JobId;
-    resourceUrl = job.ResourceUrl;
-    console.log("[Printer] Sending job " + job.JobId + " to printer @ " + printer.Addr + ", resourceUrl=" + job.ResourceUrl);
-    printer.Res.writeHead(200, {"Content-Type": "text/plain"});
-    printer.Res.end(resourceUrl);
-}
 
 // [Printer] Wait for print job 
-router.get('/mcp/printer/waitforjob', function(req, res) {
-    console.log("[Printer] connected @ " + req.socket.remoteAddress);
-    var printer = {Res: res, Addr: req.socket.remoteAddress};
-    if (g_printQueue.length > 0) {
-        SendPrintJob(g_printQueue.shift(), printer);
+router.get('/mcp/wait', function(req, res) {
+    console.log("[Printer] connected @ " + req.socket);
+    var printer = FindPrinter(req.socket, false);
+    if (printer != null) {
+        printer.Res = res;
+        printer.Sock = req.socket;
     } else {
-        // If the queue is empty, make the printer wait for job
-        g_waitingPrinter = printer;
-        res.on('close', function(e) {
-            console.log("[Printer] lost connection @ " + g_waitingPrinter.Addr);
-            g_waitingPrinter = null;
-        });
+        // New printer, add it into the list
+        printer = {Res: res, Sock: req.socket};
+        g_printers.push(printer);
     }
-});
 
+    // Schedule a cleanup if the HTTP connection is closed
+    res.on('close', function(e) {
+        console.log("[Printer] lost connection @ " + res.socket);
+        var printer = FindPrinter(res.socket, true);
+        if (printer != null) {
+            console.log("  removed from list");
+        }
+    });
+});
