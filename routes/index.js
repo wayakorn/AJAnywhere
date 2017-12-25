@@ -1,3 +1,4 @@
+var moment = require('moment');
 var express = require('express');
 var router = express.Router();
 
@@ -9,14 +10,15 @@ router.get('/', function(req, res) {
 var g_PlayTimeIsOverText = "Play time is over, boys.";
 
 function writePlayTimeIsOver(req, res) {
-  res.writeHead(200, {"Content-Type": "application/json"});
-  var isoDate = new Date().toISOString();
+  var updated = moment().subtract(1, 'hour').toISOString();
   var body = '{\n\"uid\": \"urn:uuid:feedbabe-feed-babe-food-foodfood0001\"\n';
-  body += '\"updateDate\": \"' + isoDate.toString();
+  body += '\"updateDate\": \"' + updated;
   body += '\",\n';
   body += '\"titleText\": \"Play Time Is Over Feed\",\n\"mainText": \"';
   body += g_PlayTimeIsOverText;
   body += '\"\n}';
+
+  res.writeHead(200, {"Content-Type": "application/json"});
   res.end(body);
 }
 
