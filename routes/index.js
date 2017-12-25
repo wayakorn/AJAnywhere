@@ -10,7 +10,11 @@ var g_PlayTimeIsOverText = "Play time is over, boys.";
 
 function writePlayTimeIsOver(req, res) {
   res.writeHead(200, {"Content-Type": "application/json"});
-  var body = '{\n\"uid\": \"urn:uuid:feedbabe-feed-babe-food-foodfood0001\",\n\"updateDate\": "2017-01-25T00:00:00.0Z\",\n\"titleText\": \"Play Time Is Over Feed\",\n\"mainText": \"';
+  var isoDate = new Date().toISOString();
+  var body = '{\n\"uid\": \"urn:uuid:feedbabe-feed-babe-food-foodfood0001\"\n';
+  body += '\"updateDate\": \"' + isoDate.toString();
+  body += '\",\n';
+  body += '\"titleText\": \"Play Time Is Over Feed\",\n\"mainText": \"';
   body += g_PlayTimeIsOverText;
   body += '\"\n}';
   res.end(body);
