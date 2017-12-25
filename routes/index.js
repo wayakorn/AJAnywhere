@@ -14,7 +14,7 @@ function writePlayTimeIsOver(req, res) {
   var body = '{\n\"uid\": \"urn:uuid:feedbabe-feed-babe-food-foodfood0001\"\n';
   body += '\"updateDate\": \"' + updated;
   body += '\",\n';
-  body += '\"titleText\": \"Play Time Is Over Feed\",\n\"mainText": \"';
+  body += '\"titleText\": \"PTO Feed\",\n\"mainText": \"';
   body += g_PlayTimeIsOverText;
   body += '\"\n}';
 
