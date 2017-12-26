@@ -19,8 +19,10 @@ function writePlayTimeIsOver(req, res) {
   body += g_PlayTimeIsOverText;
   body += '\"\n}\n\n';
 
-  res.writeHead(200, {"Content-Type": "application/json; charset=utf-8"});
-  res.end(body);
+  res.writeHead(200, {
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": Buffer.byteLength(body, 'utf-8')});
+res.end(body);
 }
 
 router.get('/PlayTimeIsOver', function(req, res) {
