@@ -10,7 +10,8 @@ router.get('/', function(req, res) {
 var g_PlayTimeIsOverText = "Play time is over, boys.";
 
 function writePlayTimeIsOver(req, res) {
-  var updated = moment().subtract(1, 'hour').toISOString();
+//  var updated = moment().subtract(1, 'hour').utc().format();
+  var updated = moment().utc().format('YYYY-MM-DDThh:mm.0') + 'Z';
   var body = '{\n\"uid\": \"urn:uuid:feedbabe-feed-babe-food-foodfood0001\"\n';
   body += '\"updateDate\": \"' + updated;
   body += '\",\n';
