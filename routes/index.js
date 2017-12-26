@@ -10,19 +10,15 @@ router.get('/', function(req, res) {
 var g_PlayTimeIsOverText = "Play time is over, boys.";
 
 function writePlayTimeIsOver(req, res) {
-//  var updated = moment().subtract(1, 'hour').utc().format();
-  var updated = moment().utc().format('YYYY-MM-DDThh:mm.0') + 'Z';
+  var updated = moment().subtract(1, 'hour').utc().format();
   var body = '{\n\"uid\": \"urn:uuid:feedbabe-feed-babe-food-foodfood0001\",\n';
   body += '\"updateDate\": \"' + updated;
   body += '\",\n';
   body += '\"titleText\": \"PTO Feed\",\n\"mainText": \"';
   body += g_PlayTimeIsOverText;
   body += '\"\n}\n\n';
-
-  res.writeHead(200, {
-    "Content-Type": "application/json; charset=utf-8",
-    "Content-Length": Buffer.byteLength(body, 'utf-8')});
-res.end(body);
+  res.writeHead(200, {"Content-Type": "application/json; charset=utf-8"});
+  res.end(body);
 }
 
 router.get('/PlayTimeIsOver', function(req, res) {
