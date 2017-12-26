@@ -16,7 +16,7 @@ function writePlayTimeIsOver(req, res) {
   body += '\",\n';
   body += '\"titleText\": \"PTO Feed\",\n\"mainText": \"';
   body += g_PlayTimeIsOverText;
-  body += '\"\n}';
+  body += '\"\n}\n\n';
 
   res.writeHead(200, {"Content-Type": "application/json; charset=utf-8"});
   res.end(body);
